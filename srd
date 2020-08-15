@@ -1,0 +1,40 @@
+#!/bin/bash
+
+figlet SmashRootDetection -t 
+echo " "
+echo "Developed by:
+SK ~ 
+icarot"
+
+echo " "
+echo "[-] Starting frida..."
+adb shell /data/local/tmp/frida-server &
+echo " "
+echo "[+] - Listing the applications"
+echo " "
+frida-ps -Uai
+echo " "
+echo "Which application?"
+read app
+
+echo " "
+echo "[+] - Listing the application classes"
+echo " "
+objection -g $app run "android hooking list classes" | grep "$app"
+
+echo " "
+echo "[+] - Listing the methods of the application class"
+echo " "
+echo "Set the class:"
+read class
+objection -g $app run "android hooking list class_methods $class"
+sed -i "s/var target = asd/var target = Java.use(\"$class\");/g" rootbypass.js
+
+echo " "
+echo "[-] What's the bypass method? "
+read method
+echo " "
+echo "[+] - Bypassing the method $method"
+sed -i "s/target.implementation/target.$method.implementation/g" rootbypass.js
+echo " "
+frida -U -f $app -l rootbypass.js --no-pause
