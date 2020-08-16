@@ -20,7 +20,7 @@ else
         echo " "
         echo "Installing frida..."
         echo " "
-        pip install frida-tools
+        pip3 install frida-tools
 fi
 
 if [ -e ~/.local/bin/objection ]
@@ -30,7 +30,7 @@ else
 	echo " "
         echo "Installing Objection..."
         echo " "
-        pip install objection
+        pip3 install objection
 fi
 
 echo " "
