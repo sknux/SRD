@@ -1,0 +1,65 @@
+#!/bin/bash
+
+figlet SmashDevice -t 
+echo -e "Developed by: SK & Icarot" 
+
+if adb shell pidof frida-server >/dev/null
+then
+	echo " "
+	echo -e "\e[1;93m[-] Frida Running...\e[0m"
+else
+	echo " "
+	echo -e "\e[1;93m[-] Starting Frida...\e[0m"
+	adb shell /data/local/tmp/frida-server &
+fi	
+	
+if [ -e /usr/local/bin/frida ]
+then
+	2>&1
+else
+        echo " "
+        echo "Installing frida..."
+        echo " "
+        pip install frida-tools
+fi
+
+if [ -e ~/.local/bin/objection ]
+then
+        2>&1
+else
+	echo " "
+        echo "Installing Objection..."
+        echo " "
+        pip install objection
+fi
+
+echo " "
+echo -e "\e[1;92m[+] - Listing the applications\e[0m"
+echo " "
+frida-ps -Uai
+echo " "
+echo -e "\e[1;93mWhich application?\e[0m"
+read app
+
+echo " "
+echo -e "\e[1;92m[+] - Listing the application classes\e[0m"
+echo " "
+objection -g $app run "android hooking list classes" | grep "$app"
+
+echo " "
+echo -e "\e[1;93mSet the class:\e[0m"
+read class
+echo " "
+echo -e "\e[1;92m[+] - Listing the methods of the application class\e[0m"
+echo " "
+objection -g $app run "android hooking list class_methods $class"
+sed -i "s/var target = asd/var target = Java.use(\"$class\");/g" rootbypass.js
+
+echo " "
+echo -e "\e[1;94m[-] What's the bypass method?\e[0m "
+read method
+echo " "
+echo -e "\e[1;96m[+] - Bypassing the method $method\e[0m"
+sed -i "s/target.implementation/target.$method.implementation/g" rootbypass.js
+echo " "
+frida -U -f $app -l rootbypass.js --no-pause
