@@ -1,7 +1,42 @@
 #!/bin/bash
 
 figlet SmashDevice -t 
-echo -e "Developed by: SK & Icarot" 
+echo "Developed by: SK & Icarot"
+
+creator(){
+cat > rootbypass.js << EOF
+'use strict'
+
+if (Java.available){
+
+  Java.perform(function(){
+
+    try{
+
+    var target = asd
+
+    target.implementation = function () {
+    console.log('');
+    console.log('[+] Bypassed Root Detection, Enjoy!');
+
+    return false;
+    };
+
+    }
+    catch(error){
+      console.log("[-] An exception occured");
+      console.log(String(error.stack));
+    }
+  });
+}
+else{
+
+console.log("[-] Java is not available");
+}
+EOF
+}
+
+creator
 
 if adb shell pidof frida-server >/dev/null
 then
@@ -23,7 +58,7 @@ else
         pip3 install frida-tools
 fi
 
-if [ -e ~/.local/bin/objection ]
+if [ -e /usr/local/bin/objection ]
 then
         2>&1
 else
@@ -36,15 +71,35 @@ fi
 echo " "
 echo -e "\e[1;92m[+] - Listing the applications\e[0m"
 echo " "
-frida-ps -Uai
+adb shell pm list packages -3
 echo " "
-echo -e "\e[1;93mWhich application?\e[0m"
+echo -e "\e[1;93mWhich application? (package name e.g com.example.app)\e[0m"
 read app
 
 echo " "
 echo -e "\e[1;92m[+] - Listing the application classes\e[0m"
 echo " "
 objection -g $app run "android hooking list classes" | grep "$app"
+
+echo " "
+echo -e "\e[1;92mDid you find the class? [Y or N]\e[0m" 
+read find
+if [ $find = "Y" ] 
+then 
+  2>&1
+else 
+ echo -e "\e[1;92mWould you like to hook all classes?\e[0m" 
+read hookar
+if [ $hookar = "Y" ]
+then
+  objection -g $app run "android hooking list classes"
+else
+  echo " "
+  echo -e "\e[1;91m[+] - Don't worry, we are trying one last option. Running codeshare scripts..\e[0m"
+  frida --codeshare dzonerzy/fridantiroot -U -f $app --no-pause
+  exit
+fi
+fi
 
 echo " "
 echo -e "\e[1;93mSet the class:\e[0m"
