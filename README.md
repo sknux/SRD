@@ -1,7 +1,7 @@
 # SRD
 SmashDevice usage: 
 <br>git clone https://github.com/Sh4d0wKnuckl3s/SRD.git
-<br>chmod +x
+<br>chmod +x srd
 <br>./srd and the script will talk to you
 
 # Tested on
