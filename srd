@@ -5,7 +5,7 @@ echo "Authors: SK, Icarott, n3k00n3"
 
 
 # Device Connection
-echo "\e[00;34m'[-] Are you already connected to the device? (yes or no)\e[00m"
+echo -e "\e[00;34m[-] Are you already connected to the device? (yes or no)\e[00m"
 read connect
 if [ $connect != "yes" ]; then
   echo " " 
