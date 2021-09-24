@@ -15,3 +15,4 @@ The script requires that the frida server is already installed on the device wit
 # Thank to
 icarott
 <br>alacerda
+<br>n3k00n3
